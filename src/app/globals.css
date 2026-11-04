@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
+}
+
+/* Heading face (Bricolage Grotesque); use as class "font-display". */
+.font-display { font-family: var(--font-display), var(--font-geist-sans), system-ui, sans-serif; letter-spacing: -0.02em; }
+body { background-image: radial-gradient(60rem 30rem at 85% -10%, rgba(167, 139, 250, .16), transparent 60%), radial-gradient(50rem 28rem at -10% 0%, rgba(52, 211, 153, .10), transparent 60%); background-attachment: fixed; }
+
+body {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* The native <dialog> centres itself; keep the page from scrolling behind it. */
+dialog::backdrop {
+  backdrop-filter: blur(2px);
+}
+
+/* ---------- Leaflet map ---------- */
+.leaflet-container { font-family: inherit; background: linear-gradient(135deg, #c4ecf0 0%, #cfe0fb 55%, #e3d5fb 100%); }
+.leaflet-control-zoom { border: 0 !important; box-shadow: 0 4px 14px rgba(15, 23, 42, .18) !important; border-radius: 12px !important; overflow: hidden; }
+.leaflet-control-zoom a { color: #334155 !important; }
+.leaflet-control-attribution { background: rgba(255, 255, 255, .75) !important; border-radius: 8px 0 0 0; }
+.dm-pin-wrap, .dm-cluster-wrap { background: none; border: 0; }
+/* The grey base map is tinted toward the brand's indigo/teal so it feels designed, not default. */
+.dm-basemap { filter: grayscale(1) contrast(1.2) brightness(1.08); }
+.dm-tint { mix-blend-mode: multiply; }
+.dm-tint::before { content: ""; position: absolute; left: -20000px; top: -20000px; width: 40000px; height: 40000px; background-color: #b9c6f7; background-size: 1700px 1700px;
+  /* soft blobs that fade to nothing before the tile edge, so the repeat has no visible seams */
+  background-image: radial-gradient(circle 380px at 25% 28%, #7fe0d4, transparent), radial-gradient(circle 380px at 75% 32%, #f3a6f0, transparent), radial-gradient(circle 400px at 50% 78%, #8ea2ff, transparent), radial-gradient(circle 300px at 22% 80%, #f9c98b, transparent); }
+
+/* A pin is coloured by WHAT the person does; the green glow always means "Online right now". */
+.dm-pin {
+  --pin: #64748b;
+  width: 20px; height: 20px; margin: 3px; border-radius: 9999px 9999px 9999px 2px; transform: rotate(-45deg);
+  background: var(--pin); border: 3px solid #fff; box-shadow: 0 2px 6px rgba(15, 23, 42, .45); transition: transform .15s;
+}
+.dm-pin:hover { transform: rotate(-45deg) scale(1.2); }
+.dm-pin--developer { --pin: #6366f1; }
+.dm-pin--designer { --pin: #ec4899; }
+.dm-pin--marketer { --pin: #f59e0b; }
+.dm-pin--online { box-shadow: 0 0 0 4px rgba(16, 185, 129, .35), 0 0 14px 5px rgba(16, 185, 129, .55); animation: dm-pulse 2s ease-in-out infinite; }
+.dm-pin--selected { transform: rotate(-45deg) scale(1.45); outline: 3px solid #0f172a; }
+@keyframes dm-pulse { 0%, 100% { box-shadow: 0 0 0 3px rgba(16, 185, 129, .35), 0 0 10px 3px rgba(16, 185, 129, .45); } 50% { box-shadow: 0 0 0 7px rgba(16, 185, 129, .18), 0 0 18px 7px rgba(16, 185, 129, .6); } }
+@media (prefers-reduced-motion: reduce) { .dm-pin--online { animation: none; } }
+
+.dm-cluster {
+  display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 9999px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; font-weight: 700; font-size: 14px; border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(76, 29, 149, .5);
+}
+.dm-cluster--online { background: linear-gradient(135deg, #10b981, #0d9488); box-shadow: 0 0 0 5px rgba(16, 185, 129, .3), 0 0 18px 6px rgba(16, 185, 129, .5); }
+.dm-city-anchor { background: none; border: 0; }
+.dm-city-label {
+  background: rgba(255, 255, 255, .85); border: 0; border-radius: 9999px; padding: 1px 8px; box-shadow: 0 1px 4px rgba(15, 23, 42, .2);
+  color: #1e293b; font-size: 11px; font-weight: 700;
+}
+.dm-city-label::before { display: none; }
+
+/* ---------- Landing globe overlays ---------- */
+.dm-ring { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 9999px; border: 2px solid var(--ring, #10b981); animation: dm-ring 2.4s ease-out infinite; }
+.dm-ring--you { --ring: #67e8f9; border-width: 3px; background: rgba(103, 232, 249, .35); }
+@keyframes dm-ring { 0% { transform: scale(.5); opacity: .9; } 100% { transform: scale(2.6); opacity: 0; } }
+.dm-tag { will-change: transform, opacity; }
+.dm-tag-card {
+  position: absolute; min-width: 11rem; padding: .6rem .8rem; border-radius: 1rem; color: #fff;
+  background: linear-gradient(135deg, rgba(67, 56, 202, .94), rgba(126, 34, 206, .92)); border: 1px solid rgba(255, 255, 255, .28);
+  box-shadow: 0 10px 30px rgba(30, 27, 75, .55); backdrop-filter: blur(10px); bottom: 14px; left: 14px;
+}
+.dm-tag[data-side="left"] .dm-tag-card { left: auto; right: 14px; }
+@media (prefers-reduced-motion: reduce) { .dm-ring { animation: none; opacity: .6; } }
